@@ -55,8 +55,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  generate: true
 
-  assets:
-    - assets/images/
-    - assets/icons/
+  # Removed generate: true as we're using custom AppLocalizations
+  # Comment out empty assets for now
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/

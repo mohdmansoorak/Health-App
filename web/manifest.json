@@ -1,13 +1,14 @@
 {
-    "name": "Insurance App",
-    "short_name": "Insurance",
+    "name": "Health Insurance App",
+    "short_name": "Health Insurance",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#2563EB",
     "theme_color": "#2563EB",
-    "description": "Your trusted insurance partner. Manage policies, claims, and more.",
+    "description": "Complete health insurance management app with CareConnect services, appointments, claims, and wellness programs.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
+    "lang": "en",
     "icons": [
         {
             "src": "icons/Icon-192.png",
