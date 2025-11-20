@@ -1,30 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:insurance_app/services/auth_service.dart';
-import 'package:insurance_app/config/router.dart';
-import 'package:insurance_app/config/theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'core/config/app_theme.dart';
+import 'core/config/routes.dart';
+import 'core/providers/auth_provider.dart';
+import 'core/providers/locale_provider.dart';
+import 'core/providers/appointment_provider.dart';
+import 'core/providers/member_provider.dart';
+import 'core/l10n/app_localizations.dart';
 
-/// Main entry point of the app
-/// This sets up the app with providers, routing, and theme
-void main() {
-  runApp(const InsuranceApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Set preferred orientations
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  // Set system UI overlay style
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
+
+  runApp(const HealthInsuranceApp());
 }
 
-class InsuranceApp extends StatelessWidget {
-  const InsuranceApp({super.key});
+class HealthInsuranceApp extends StatelessWidget {
+  const HealthInsuranceApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      // Providers allow us to share data across the app
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => MemberProvider()),
+        ChangeNotifierProvider(create: (_) => AppointmentProvider()),
       ],
-      child: MaterialApp.router(
-        title: 'Insurance App',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme, // Our custom theme
-        routerConfig: appRouter, // Navigation routes
+      child: Consumer<LocaleProvider>(
+        builder: (context, localeProvider, _) {
+          return MaterialApp.router(
+            title: 'HealthGuard Insurance',
+            debugShowCheckedModeBanner: false,
+
+            // Theme
+            theme: AppTheme.lightTheme,
+
+            // Localization
+            locale: localeProvider.locale,
+            supportedLocales: const [
+              Locale('en', ''),
+              Locale('ar', ''),
+            ],
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+
+            // Routing
+            routerConfig: appRouter,
+
+            // RTL Support
+            builder: (context, child) {
+              return Directionality(
+                textDirection: localeProvider.isArabic
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
+                child: child!,
+              );
+            },
+          );
+        },
       ),
     );
   }
