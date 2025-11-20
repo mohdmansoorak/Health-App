@@ -14,7 +14,7 @@ import {
   X,
   Bell,
   Shield,
-  IdCard
+  BadgeCheck
 } from 'lucide-react';
 
 const Layout = () => {
@@ -35,7 +35,7 @@ const Layout = () => {
     { to: '/policies', icon: FileText, label: 'My Policies' },
     { to: '/claims', icon: ClipboardList, label: 'Claims' },
     { to: '/providers', icon: MapPin, label: 'Find Providers' },
-    { to: '/id-card', icon: IdCard, label: 'ID Card' },
+    { to: '/id-card', icon: BadgeCheck, label: 'ID Card' },
     { to: '/payments', icon: CreditCard, label: 'Payments' },
     { to: '/profile', icon: User, label: 'Profile' },
     { to: '/support', icon: HelpCircle, label: 'Support' },
