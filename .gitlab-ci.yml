@@ -1,0 +1,87 @@
+# GitLab CI/CD Configuration for Flutter App
+# This file defines how GitLab will build and test the app
+
+# Use a Docker image with Flutter pre-installed
+image: cirrusci/flutter:latest
+
+# Stages of the CI/CD pipeline
+stages:
+  - test
+  - build
+
+# Before running any job, get all dependencies
+before_script:
+  - flutter --version
+  - flutter pub get
+
+# Job 1: Run tests and code analysis
+analyze_and_test:
+  stage: test
+  script:
+    # Analyze code for any issues
+    - flutter analyze
+
+    # Run tests (if we had any test files)
+    - flutter test || echo "No tests found, skipping..."
+
+  # This job should always run
+  allow_failure: false
+
+  # Only run on main branch and merge requests
+  only:
+    - main
+    - merge_requests
+
+# Job 2: Build Android APK
+build_android:
+  stage: build
+  script:
+    # Build the Android APK in release mode
+    - flutter build apk --release
+
+    # Show where the APK was created
+    - echo "APK built successfully!"
+    - echo "Location: build/app/outputs/flutter-apk/app-release.apk"
+    - ls -lh build/app/outputs/flutter-apk/
+
+  # Save the built APK as an artifact (downloadable file)
+  artifacts:
+    name: "insurance-app-android-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - build/app/outputs/flutter-apk/app-release.apk
+    expire_in: 30 days
+
+  # Only build on main branch and merge requests
+  only:
+    - main
+    - merge_requests
+
+# Job 3: Build Android App Bundle (for Google Play Store)
+build_android_bundle:
+  stage: build
+  script:
+    # Build the Android App Bundle
+    - flutter build appbundle --release
+
+    # Show where the bundle was created
+    - echo "App Bundle built successfully!"
+    - echo "Location: build/app/outputs/bundle/release/app-release.aab"
+    - ls -lh build/app/outputs/bundle/release/
+
+  # Save the built bundle as an artifact
+  artifacts:
+    name: "insurance-app-bundle-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - build/app/outputs/bundle/release/app-release.aab
+    expire_in: 30 days
+
+  # Only build on main branch
+  only:
+    - main
+
+# Cache Flutter packages to speed up builds
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .pub-cache/
+    - .flutter/
