@@ -2,6 +2,7 @@
   "name": "health-insurance-app",
   "version": "1.0.0",
   "description": "Comprehensive Health Insurance Management App",
+  "homepage": "https://mohdmansoorak.github.io/Health-App",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
