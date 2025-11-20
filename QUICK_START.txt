@@ -1,0 +1,65 @@
+╔══════════════════════════════════════════════════════════════════╗
+║          🚀 DEPLOY YOUR HEALTH INSURANCE APP - 3 STEPS          ║
+╚══════════════════════════════════════════════════════════════════╝
+
+Everything is built and ready! Just follow these 3 simple steps:
+
+┌──────────────────────────────────────────────────────────────────┐
+│ STEP 1: MERGE CODE (1 minute)                                    │
+└──────────────────────────────────────────────────────────────────┘
+
+1. Click this link:
+   https://github.com/mohdmansoorak/Health-App/compare/claude/health-insurance-app-01EvFJqrr14p9P9kLb5fxmVD
+
+2. Click "Create pull request" (green button)
+3. Click "Create pull request" again
+4. Click "Merge pull request"
+5. Click "Confirm merge"
+
+✅ Done! Code is now in main branch.
+
+┌──────────────────────────────────────────────────────────────────┐
+│ STEP 2: CONFIGURE GITHUB PAGES (1 minute)                        │
+└──────────────────────────────────────────────────────────────────┘
+
+1. Click this link:
+   https://github.com/mohdmansoorak/Health-App/settings/pages
+
+2. Under "Source": Select "Deploy from a branch"
+3. Under "Branch": 
+   - First dropdown: Select "main"
+   - Second dropdown: Select "/docs"
+4. Click "Save"
+
+✅ Done! GitHub will deploy your app (takes 2 minutes).
+
+┌──────────────────────────────────────────────────────────────────┐
+│ STEP 3: ACCESS YOUR LIVE APP! (Immediate)                        │
+└──────────────────────────────────────────────────────────────────┘
+
+Your app will be live at:
+https://mohdmansoorak.github.io/Health-App
+
+Login with ANY email and password (it's demo mode!)
+
+Example:
+- Email: test@example.com
+- Password: password123
+
+✅ You'll see the dashboard with all features!
+
+┌──────────────────────────────────────────────────────────────────┐
+│ 📱 BONUS: MOBILE APP (Android)                                   │
+└──────────────────────────────────────────────────────────────────┘
+
+Download APK from:
+https://gitlab.com/mohdmansoorak/Health-App/-/pipelines
+
+Login with:
+- Mobile number: 501234567
+- OTP: 123456
+
+╔══════════════════════════════════════════════════════════════════╗
+║  That's it! Your app is ready. See DEPLOY_INSTRUCTIONS.md for   ║
+║  detailed help with screenshots and troubleshooting.             ║
+╚══════════════════════════════════════════════════════════════════╝
