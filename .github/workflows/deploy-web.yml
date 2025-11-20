@@ -36,10 +36,6 @@ jobs:
     - name: Get dependencies
       run: flutter pub get
 
-    - name: Analyze code (continue on error)
-      run: flutter analyze || true
-      continue-on-error: true
-
     - name: Build Web App
       run: flutter build web --release --web-renderer canvaskit --base-href /Health-App/
 
