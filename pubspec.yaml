@@ -23,10 +23,10 @@ dependencies:
 
   # Storage
   shared_preferences: ^2.2.2
-  flutter_secure_storage: ^9.0.0
+  # Removed for web compatibility: flutter_secure_storage (mobile-only)
 
   # Authentication
-  local_auth: ^2.1.7
+  # Removed for web compatibility: local_auth (mobile-only biometric)
   pin_code_fields: ^8.0.1
 
   # UI Components
@@ -36,9 +36,10 @@ dependencies:
   table_calendar: ^3.0.9
   qr_flutter: ^4.1.0
 
-  # File Handling
-  image_picker: ^1.0.5
-  file_picker: ^6.1.1
+  # File Handling - Removed for web compatibility
+  # image_picker and file_picker don't work properly on web
+  # image_picker: ^1.0.5
+  # file_picker: ^6.1.1
 
   # Utils
   uuid: ^4.2.2
