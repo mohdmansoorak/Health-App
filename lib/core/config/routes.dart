@@ -5,6 +5,9 @@ import '../../features/auth/screens/otp_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/appointments/screens/booking_wizard_screen.dart';
 import '../../features/appointments/screens/appointments_list_screen.dart';
+import '../../features/wellness/screens/wellness_screen.dart';
+import '../../features/claims/screens/claims_screen.dart';
+import '../../features/profile/screens/profile_screen.dart';
 import '../../core/models/appointment.dart';
 
 /// App routing configuration
@@ -55,18 +58,18 @@ final appRouter = GoRouter(
       ),
     ),
 
-    // Placeholder Routes (to be implemented)
+    // Main App Routes
     GoRoute(
       path: '/wellness',
-      redirect: (context, state) => '/home',
+      builder: (context, state) => const WellnessScreen(),
     ),
     GoRoute(
       path: '/claims',
-      redirect: (context, state) => '/home',
+      builder: (context, state) => const ClaimsScreen(),
     ),
     GoRoute(
       path: '/profile',
-      redirect: (context, state) => '/home',
+      builder: (context, state) => const ProfileScreen(),
     ),
 
     // Default route
