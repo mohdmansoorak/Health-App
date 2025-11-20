@@ -117,7 +117,9 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
-    padding: 'max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left))',
+    padding: '1rem',
+    position: 'relative',
+    width: '100%',
   },
   loginBox: {
     width: '100%',
@@ -127,6 +129,9 @@ const styles = {
     borderRadius: '1rem',
     boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
     overflow: 'hidden',
+    position: 'relative',
+    left: '50%',
+    transform: 'translateX(-50%)',
   },
   header: {
     textAlign: 'center',
