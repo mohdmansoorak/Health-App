@@ -1,0 +1,128 @@
+name: Build and Deploy Android APK
+
+on:
+  push:
+    branches: [ main, master, claude/* ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.16.0'
+        channel: 'stable'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Analyze code
+      run: flutter analyze
+      continue-on-error: true
+
+    - name: Run tests
+      run: flutter test
+      continue-on-error: true
+
+    - name: Build APK (Debug)
+      run: flutter build apk --debug
+
+    - name: Build APK (Release)
+      run: flutter build apk --release --split-per-abi
+
+    - name: Build App Bundle
+      run: flutter build appbundle --release
+
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: debug-apk
+        path: build/app/outputs/flutter-apk/app-debug.apk
+
+    - name: Upload Release APKs
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-apks
+        path: build/app/outputs/flutter-apk/app-*-release.apk
+
+    - name: Upload App Bundle
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-bundle
+        path: build/app/outputs/bundle/release/app-release.aab
+
+    - name: Create Release
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        name: Release v1.0.${{ github.run_number }}
+        body: |
+          ## Health Insurance App Release
+
+          ### What's New
+          - Complete health insurance mobile app
+          - CareConnect services with 3 appointment types
+          - Bilingual support (Arabic/English)
+          - Comprehensive booking wizard
+          - Wellness and loyalty programs
+          - Claims management
+
+          ### Installation
+          1. Download the APK for your device architecture
+          2. Enable "Install from Unknown Sources" in Android settings
+          3. Install the APK
+          4. Use demo credentials: Any mobile/ID, OTP: 123456
+
+          ### APK Files
+          - `app-armeabi-v7a-release.apk` - For older 32-bit devices
+          - `app-arm64-v8a-release.apk` - For modern 64-bit devices (recommended)
+          - `app-x86_64-release.apk` - For Android emulators
+        files: |
+          build/app/outputs/flutter-apk/app-*-release.apk
+          build/app/outputs/bundle/release/app-release.aab
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Optional: Deploy to Firebase App Distribution
+  deploy-firebase:
+    needs: build-android
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Download Release APK
+      uses: actions/download-artifact@v3
+      with:
+        name: release-apks
+
+    - name: Deploy to Firebase App Distribution
+      if: ${{ secrets.FIREBASE_APP_ID != '' }}
+      uses: wzieba/Firebase-Distribution-Github-Action@v1
+      with:
+        appId: ${{ secrets.FIREBASE_APP_ID }}
+        serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS }}
+        groups: testers
+        file: app-arm64-v8a-release.apk
+        releaseNotes: |
+          Automatic deployment from GitHub Actions
+          Build number: ${{ github.run_number }}
