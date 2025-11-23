@@ -59,3 +59,7 @@ ios/Pods/
 # Bundle
 android/app/build/
 ios/build/
+
+# Web build
+web-build/
+.webpack/
