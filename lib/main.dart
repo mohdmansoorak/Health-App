@@ -1,88 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:provider/provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'core/config/app_theme.dart';
-import 'core/config/routes.dart';
-import 'core/providers/auth_provider.dart';
-import 'core/providers/locale_provider.dart';
-import 'core/providers/appointment_provider.dart';
-import 'core/providers/member_provider.dart';
-import 'core/l10n/app_localizations.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Set preferred orientations (mobile only)
-  if (!kIsWeb) {
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-
-    // Set system UI overlay style (mobile only)
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-    );
-  }
-
-  runApp(const HealthInsuranceApp());
+void main() {
+  runApp(const MyApp());
 }
 
-class HealthInsuranceApp extends StatelessWidget {
-  const HealthInsuranceApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => LocaleProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => MemberProvider()),
-        ChangeNotifierProvider(create: (_) => AppointmentProvider()),
-      ],
-      child: Consumer<LocaleProvider>(
-        builder: (context, localeProvider, _) {
-          return MaterialApp.router(
-            title: 'HealthGuard Insurance',
-            debugShowCheckedModeBanner: false,
+    return MaterialApp(
+      title: 'Health Insurance App',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(),
+    );
+  }
+}
 
-            // Theme
-            theme: AppTheme.lightTheme,
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
 
-            // Localization
-            locale: localeProvider.locale,
-            supportedLocales: const [
-              Locale('en', ''),
-              Locale('ar', ''),
-            ],
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-
-            // Routing
-            routerConfig: appRouter,
-
-            // RTL Support
-            builder: (context, child) {
-              return Directionality(
-                textDirection: localeProvider.isArabic
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
-                child: child!,
-              );
-            },
-          );
-        },
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Health Insurance App'),
+      ),
+      body: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.medical_services,
+              size: 100,
+              color: Colors.blue,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Welcome to Health Insurance App',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Start building from scratch!',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
