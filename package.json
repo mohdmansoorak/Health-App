@@ -1,32 +1,63 @@
 {
-  "name": "health-insurance-app",
+  "name": "careconnect-health",
   "version": "1.0.0",
-  "description": "Comprehensive Health Insurance Management App",
-  "homepage": "https://mohdmansoorak.github.io/Health-App",
-  "private": true,
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
-    "react-scripts": "5.0.1",
-    "lucide-react": "^0.294.0"
-  },
+  "description": "CareConnect Health - Complete Health Insurance Mobile App",
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "type-check": "tsc --noEmit"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.73.2",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/stack": "^6.3.20",
+    "@react-navigation/bottom-tabs": "^6.5.11",
+    "@react-navigation/native-stack": "^6.9.17",
+    "@reduxjs/toolkit": "^2.0.1",
+    "react-redux": "^9.0.4",
+    "axios": "^1.6.2",
+    "i18next": "^23.7.8",
+    "react-i18next": "^13.5.0",
+    "react-native-safe-area-context": "^4.8.2",
+    "react-native-screens": "^3.29.0",
+    "react-native-gesture-handler": "^2.14.1",
+    "react-native-reanimated": "^3.6.1",
+    "react-native-responsive-dimensions": "^3.1.1",
+    "react-native-vector-icons": "^10.0.3",
+    "react-native-svg": "^14.1.0",
+    "react-native-qrcode-svg": "^6.2.0",
+    "react-native-image-picker": "^7.1.0",
+    "react-native-share": "^10.0.2",
+    "react-native-view-shot": "^3.8.0",
+    "@react-native-async-storage/async-storage": "^1.21.0",
+    "react-native-modal": "^13.0.1",
+    "react-native-calendars": "^1.1302.0",
+    "react-native-linear-gradient": "^2.8.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/runtime": "^7.23.6",
+    "@react-native/eslint-config": "^0.73.1",
+    "@react-native/metro-config": "^0.73.2",
+    "@react-native/typescript-config": "^0.73.1",
+    "@types/react": "^18.2.45",
+    "@types/react-native": "^0.72.8",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "babel-jest": "^29.7.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "metro-react-native-babel-preset": "^0.77.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

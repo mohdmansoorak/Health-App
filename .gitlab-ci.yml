@@ -1,0 +1,107 @@
+image: node:18
+
+stages:
+  - install
+  - lint
+  - build
+  - deploy
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  ANDROID_COMPILE_SDK: "33"
+  ANDROID_BUILD_TOOLS: "33.0.0"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .npm/
+    - node_modules/
+    - android/.gradle/
+
+before_script:
+  - node --version
+  - npm --version
+
+install_dependencies:
+  stage: install
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 day
+
+lint:
+  stage: lint
+  dependencies:
+    - install_dependencies
+  script:
+    - npm run lint
+  allow_failure: true
+
+type_check:
+  stage: lint
+  dependencies:
+    - install_dependencies
+  script:
+    - npm run type-check
+  allow_failure: true
+
+build_android:
+  stage: build
+  image: reactnativecommunity/react-native-android
+  dependencies:
+    - install_dependencies
+  script:
+    - cd android
+    - ./gradlew assembleRelease
+  artifacts:
+    paths:
+      - android/app/build/outputs/apk/release/
+    expire_in: 7 days
+  only:
+    - main
+    - dev
+
+build_ios:
+  stage: build
+  tags:
+    - macos
+  dependencies:
+    - install_dependencies
+  script:
+    - cd ios
+    - pod install
+    - xcodebuild -workspace CareConnectHealth.xcworkspace -scheme CareConnectHealth -configuration Release archive
+  artifacts:
+    paths:
+      - ios/build/
+    expire_in: 7 days
+  only:
+    - main
+    - dev
+
+deploy_android:
+  stage: deploy
+  image: google/cloud-sdk:alpine
+  dependencies:
+    - build_android
+  script:
+    - echo "Deploying to Play Store..."
+    - echo "Add your deployment script here"
+  only:
+    - main
+  when: manual
+
+deploy_ios:
+  stage: deploy
+  tags:
+    - macos
+  dependencies:
+    - build_ios
+  script:
+    - echo "Deploying to App Store..."
+    - echo "Add your deployment script here"
+  only:
+    - main
+  when: manual
