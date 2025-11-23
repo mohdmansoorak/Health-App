@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0066CC">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="CareConnect">
+    <title>CareConnect Health</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 428px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        /* Auth Screens */
+        .screen {
+            display: none;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .welcome-screen {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0066CC 0%, #00A3A1 100%);
+            color: white;
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .features {
+            margin: 40px 0;
+        }
+
+        .feature {
+            font-size: 16px;
+            margin: 10px 0;
+            opacity: 0.95;
+        }
+
+        .btn {
+            background: white;
+            color: #0066CC;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Dashboard */
+        .header {
+            padding: 20px;
+            border-bottom: 1px solid #E2E8F0;
+            background: white;
+        }
+
+        .greeting {
+            font-size: 14px;
+            color: #64748B;
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .policy-card {
+            background: #0066CC;
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 12px;
+        }
+
+        .quick-actions {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .action-btn {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: #E0EFFF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 8px;
+        }
+
+        .action-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .card {
+            background: white;
+            padding: 16px;
+            margin: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: #0066CC;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            max-width: 428px;
+            margin: 0 auto;
+        }
+
+        .tab {
+            text-align: center;
+            cursor: pointer;
+            flex: 1;
+            padding: 5px;
+        }
+
+        .tab-icon {
+            font-size: 24px;
+        }
+
+        .tab-label {
+            font-size: 10px;
+            margin-top: 4px;
+            color: #94A3B8;
+        }
+
+        .tab.active .tab-label {
+            color: #0066CC;
+        }
+
+        .content {
+            padding-bottom: 70px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome" class="screen welcome-screen active">
+            <div class="icon">🏥</div>
+            <div class="title">CareConnect Health</div>
+            <div class="subtitle">Your Health Insurance Companion</div>
+            <div class="features">
+                <div class="feature">✓ Digital e-Card</div>
+                <div class="feature">✓ Book Appointments</div>
+                <div class="feature">✓ Manage Claims</div>
+                <div class="feature">✓ Find Providers</div>
+            </div>
+            <button class="btn" onclick="showScreen('login')">Get Started</button>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="login" class="screen">
+            <div style="text-align: center; padding: 60px 0 40px;">
+                <div class="icon" style="font-size: 60px;">🏥</div>
+                <div class="title" style="color: #1E293B; margin: 20px 0 10px;">Welcome Back</div>
+                <div style="color: #64748B; font-size: 14px;">Enter your details to access your account</div>
+            </div>
+            <div class="input-group">
+                <label>Mobile Number or National ID</label>
+                <input type="text" id="mobile" placeholder="050 123 4567 or 1234567890">
+            </div>
+            <button class="btn-primary" onclick="showScreen('otp')">Continue</button>
+        </div>
+
+        <!-- OTP Screen -->
+        <div id="otp" class="screen">
+            <div style="text-align: center; padding: 60px 0 40px;">
+                <div class="icon" style="font-size: 60px;">📱</div>
+                <div class="title" style="color: #1E293B; margin: 20px 0 10px;">Enter OTP</div>
+                <div style="color: #64748B; font-size: 14px; margin-bottom: 5px;">We've sent a code to your mobile</div>
+                <div style="color: #94A3B8; font-size: 12px;">(Use 1234 for demo)</div>
+            </div>
+            <div class="input-group">
+                <label>OTP Code</label>
+                <input type="text" id="otpCode" placeholder="1234" maxlength="4">
+            </div>
+            <button class="btn-primary" onclick="showScreen('dashboard')">Verify</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="screen">
+            <div class="content">
+                <div class="header">
+                    <div class="greeting">Hello,</div>
+                    <div class="user-name">Ahmed Al-Mansoor</div>
+                </div>
+
+                <div class="policy-card">
+                    <div style="font-size: 12px; opacity: 0.8;">Policy Number</div>
+                    <div style="font-size: 20px; font-weight: 700; margin: 8px 0;">POL-2024-001</div>
+                    <div style="font-size: 14px; color: #10B981;">● Active</div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="section-title">Quick Actions</div>
+                    <div class="actions-grid">
+                        <div class="action-btn" onclick="showScreen('ecard')">
+                            <div class="action-icon">💳</div>
+                            <div class="action-label">e-Card</div>
+                        </div>
+                        <div class="action-btn" onclick="alert('Benefits feature')">
+                            <div class="action-icon">📋</div>
+                            <div class="action-label">Benefits</div>
+                        </div>
+                        <div class="action-btn" onclick="alert('Approvals feature')">
+                            <div class="action-icon">✅</div>
+                            <div class="action-label">Approvals</div>
+                        </div>
+                        <div class="action-btn" onclick="alert('Claims feature')">
+                            <div class="action-icon">📄</div>
+                            <div class="action-label">Claims</div>
+                        </div>
+                        <div class="action-btn" onclick="alert('Book appointment')">
+                            <div class="action-icon">📅</div>
+                            <div class="action-label">Book</div>
+                        </div>
+                        <div class="action-btn" onclick="alert('Instant doctor')">
+                            <div class="action-icon">👨‍⚕️</div>
+                            <div class="action-label">Instant Dr</div>
+                        </div>
+                        <div class="action-btn" onclick="alert('Wellness feature')">
+                            <div class="action-icon">💪</div>
+                            <div class="action-label">Wellness</div>
+                        </div>
+                        <div class="action-btn" onclick="alert('More options')">
+                            <div class="action-icon">⋯</div>
+                            <div class="action-label">More</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 0 20px;">
+                    <div class="section-title">Upcoming Appointments</div>
+                    <div class="card">
+                        <div style="font-weight: 600; margin-bottom: 5px;">Dr. Sarah Khan</div>
+                        <div style="font-size: 14px; color: #64748B; margin-bottom: 3px;">Dermatology</div>
+                        <div style="font-size: 14px; color: #1E293B;">2024-11-25 • 10:00 AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-bar">
+                <div class="tab active" onclick="showScreen('dashboard')">
+                    <div class="tab-icon">🏠</div>
+                    <div class="tab-label">Home</div>
+                </div>
+                <div class="tab" onclick="alert('Policy feature')">
+                    <div class="tab-icon">📋</div>
+                    <div class="tab-label">Policy</div>
+                </div>
+                <div class="tab" onclick="alert('Appointments feature')">
+                    <div class="tab-icon">📅</div>
+                    <div class="tab-label">Appointments</div>
+                </div>
+                <div class="tab" onclick="alert('More menu')">
+                    <div class="tab-icon">☰</div>
+                    <div class="tab-label">More</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- e-Card Screen -->
+        <div id="ecard" class="screen">
+            <div style="padding: 20px;">
+                <button onclick="showScreen('dashboard')" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-bottom: 20px;">←</button>
+                <div class="section-title">Digital e-Card</div>
+
+                <div style="background: #0066CC; color: white; padding: 30px; border-radius: 16px; margin-top: 20px;">
+                    <div style="font-size: 18px; font-weight: 700; margin-bottom: 5px;">CareConnect Health</div>
+                    <div style="font-size: 12px; opacity: 0.8; margin-bottom: 30px;">Member e-Card</div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-size: 10px; opacity: 0.8;">Member Name</div>
+                        <div style="font-size: 16px; font-weight: 600; margin-top: 4px;">Ahmed Al-Mansoor</div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-size: 10px; opacity: 0.8;">Member ID</div>
+                        <div style="font-size: 16px; font-weight: 600; margin-top: 4px;">1234567890</div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-size: 10px; opacity: 0.8;">Policy Number</div>
+                        <div style="font-size: 16px; font-weight: 600; margin-top: 4px;">POL-2024-001</div>
+                    </div>
+
+                    <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 40px; color: #0066CC;">▦</div>
+                        <div style="font-size: 12px; color: #64748B; margin-top: 8px;">QR CODE</div>
+                        <div style="font-size: 10px; color: #94A3B8;">Scan at provider</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="margin-top: 20px;" onclick="alert('Download e-Card')">Download e-Card</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
