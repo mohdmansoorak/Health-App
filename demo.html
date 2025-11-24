@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0066CC">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CareConnect">
+    <title>CareConnect Health</title>
+    <link rel="manifest" href="public/manifest.json">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-container {
+            max-width: 428px;
+            margin: 0 auto;
+            background: #F8FAFC;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Welcome Screen - Modern Gradient */
+        .welcome-screen {
+            background: linear-gradient(160deg, #0066CC 0%, #00A3A1 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-screen::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            top: -200px;
+            right: -200px;
+        }
+
+        .welcome-icon {
+            font-size: 100px;
+            margin-bottom: 32px;
+            animation: pulse 2s infinite;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+        }
+
+        .welcome-title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 48px;
+            font-weight: 400;
+        }
+
+        .features-list {
+            margin: 32px 0 48px;
+            display: grid;
+            gap: 16px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .feature-item {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+        }
+
+        /* Modern Button */
+        .btn-primary {
+            background: white;
+            color: #0066CC;
+            border: none;
+            padding: 18px 48px;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* Auth Screens */
+        .auth-screen {
+            padding: 0 24px 40px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .auth-header {
+            text-align: center;
+            padding: 80px 0 48px;
+        }
+
+        .auth-icon {
+            font-size: 72px;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        .auth-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-subtitle {
+            font-size: 16px;
+            color: #64748B;
+            line-height: 1.5;
+        }
+
+        .auth-hint {
+            font-size: 14px;
+            color: #94A3B8;
+            margin-top: 8px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #E2E8F0;
+            border-radius: 16px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0066CC;
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #0066CC 0%, #0052A3 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0, 102, 204, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:active {
+            transform: translateY(2px);
+        }
+
+        /* Dashboard - Premium Design */
+        .dashboard-header {
+            background: linear-gradient(160deg, #0066CC 0%, #0052A3 100%);
+            color: white;
+            padding: 60px 24px 140px;
+            position: relative;
+            border-radius: 0 0 32px 32px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .greeting {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .user-name {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .notification-badge {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 10px;
+            height: 10px;
+            background: #EF4444;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* Floating Policy Card */
+        .policy-card-floating {
+            position: absolute;
+            bottom: -80px;
+            left: 24px;
+            right: 24px;
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .policy-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .policy-label {
+            font-size: 12px;
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .policy-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #DCFCE7;
+            color: #16A34A;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #16A34A;
+            border-radius: 50%;
+        }
+
+        .policy-number {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 8px;
+        }
+
+        .policy-type {
+            font-size: 14px;
+            color: #64748B;
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions-section {
+            padding: 120px 24px 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 20px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-item:active {
+            transform: scale(0.95);
+        }
+
+        .action-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+        }
+
+        .action-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #F1F5F9;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #64748B;
+            margin-bottom: 4px;
+        }
+
+        .card-info {
+            font-size: 14px;
+            color: #0F172A;
+            font-weight: 500;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #F1F5F9;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+            max-width: 428px;
+            margin: 0 auto;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            background: #EFF6FF;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            transition: transform 0.2s;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #94A3B8;
+        }
+
+        .nav-item.active .nav-label {
+            color: #0066CC;
+        }
+
+        /* e-Card Screen */
+        .ecard-screen {
+            background: linear-gradient(160deg, #0066CC 0%, #0052A3 100%);
+            min-height: 100vh;
+            padding: 60px 24px 100px;
+        }
+
+        .back-button {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+
+        .ecard-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 32px;
+        }
+
+        .ecard-container {
+            background: white;
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .ecard-header {
+            margin-bottom: 32px;
+        }
+
+        .ecard-brand {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0066CC;
+            margin-bottom: 4px;
+        }
+
+        .ecard-type {
+            font-size: 13px;
+            color: #64748B;
+        }
+
+        .ecard-field {
+            margin-bottom: 20px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .field-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        .qr-container {
+            background: #F8FAFC;
+            padding: 32px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .qr-code {
+            font-size: 80px;
+            margin-bottom: 12px;
+            opacity: 0.3;
+        }
+
+        .qr-label {
+            font-size: 13px;
+            color: #64748B;
+            font-weight: 600;
+        }
+
+        .ecard-actions {
+            display: grid;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #0066CC;
+            border: 2px solid white;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .content-spacer {
+            padding-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Welcome Screen -->
+        <div id="welcome" class="screen active welcome-screen">
+            <div class="welcome-icon">🏥</div>
+            <div class="welcome-title">CareConnect Health</div>
+            <div class="welcome-subtitle">Your Health Insurance Companion</div>
+
+            <div class="features-list">
+                <div class="feature-item">
+                    <span class="feature-icon">💳</span>
+                    <span>Digital e-Card</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📅</span>
+                    <span>Book Appointments</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📄</span>
+                    <span>Manage Claims</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🏥</span>
+                    <span>Find Providers</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="showScreen('login')">Get Started</button>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="login" class="screen auth-screen">
+            <div class="auth-header">
+                <div class="auth-icon">🏥</div>
+                <div class="auth-title">Welcome Back</div>
+                <div class="auth-subtitle">Enter your details to access your account</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mobile Number or National ID</label>
+                <input type="text" class="form-input" placeholder="050 123 4567 or 1234567890" id="mobileInput">
+            </div>
+
+            <button class="btn-action" onclick="showScreen('otp')">Continue</button>
+        </div>
+
+        <!-- OTP Screen -->
+        <div id="otp" class="screen auth-screen">
+            <div class="auth-header">
+                <div class="auth-icon">📱</div>
+                <div class="auth-title">Enter OTP</div>
+                <div class="auth-subtitle">We've sent a code to your mobile</div>
+                <div class="auth-hint">(Use 1234 for demo)</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">OTP Code</label>
+                <input type="text" class="form-input" placeholder="1234" maxlength="4" id="otpInput" inputmode="numeric">
+            </div>
+
+            <button class="btn-action" onclick="showScreen('dashboard')">Verify & Login</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="screen">
+            <div class="dashboard-header">
+                <div class="header-top">
+                    <div>
+                        <div class="greeting">Good morning,</div>
+                        <div class="user-name">Ahmed</div>
+                    </div>
+                    <div class="notification-badge" onclick="alert('3 new notifications')">
+                        🔔
+                        <span class="notification-dot"></span>
+                    </div>
+                </div>
+
+                <div class="policy-card-floating">
+                    <div class="policy-card-header">
+                        <span class="policy-label">Policy Number</span>
+                        <span class="policy-status">
+                            <span class="status-dot"></span>
+                            Active
+                        </span>
+                    </div>
+                    <div class="policy-number">POL-2024-001</div>
+                    <div class="policy-type">Premium Health Insurance</div>
+                </div>
+            </div>
+
+            <div class="quick-actions-section">
+                <div class="section-title">Quick Actions</div>
+                <div class="actions-grid">
+                    <div class="action-item" onclick="showScreen('ecard')">
+                        <div class="action-icon-wrapper">💳</div>
+                        <div class="action-label">e-Card</div>
+                    </div>
+                    <div class="action-item" onclick="alert('Benefits')">
+                        <div class="action-icon-wrapper">📋</div>
+                        <div class="action-label">Benefits</div>
+                    </div>
+                    <div class="action-item" onclick="alert('Approvals')">
+                        <div class="action-icon-wrapper">✅</div>
+                        <div class="action-label">Approvals</div>
+                    </div>
+                    <div class="action-item" onclick="alert('Claims')">
+                        <div class="action-icon-wrapper">📄</div>
+                        <div class="action-label">Claims</div>
+                    </div>
+                    <div class="action-item" onclick="alert('Book')">
+                        <div class="action-icon-wrapper">📅</div>
+                        <div class="action-label">Book</div>
+                    </div>
+                    <div class="action-item" onclick="alert('Instant Doctor')">
+                        <div class="action-icon-wrapper">👨‍⚕️</div>
+                        <div class="action-label">Instant Dr</div>
+                    </div>
+                    <div class="action-item" onclick="alert('Wellness')">
+                        <div class="action-icon-wrapper">💪</div>
+                        <div class="action-label">Wellness</div>
+                    </div>
+                    <div class="action-item" onclick="alert('More')">
+                        <div class="action-icon-wrapper">⋯</div>
+                        <div class="action-label">More</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Upcoming Appointments</div>
+                <div class="content-card">
+                    <div class="card-title">Dr. Sarah Khan</div>
+                    <div class="card-subtitle">Dermatology</div>
+                    <div class="card-info">Nov 25, 2024 • 10:00 AM</div>
+                </div>
+
+                <div class="section-title">Recent Claims</div>
+                <div class="content-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div class="card-title">Consultation</div>
+                            <div class="card-subtitle">Dr. Ahmed Clinic</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 18px; font-weight: 800; color: #0066CC;">SAR 250</div>
+                            <div style="font-size: 12px; color: #16A34A; font-weight: 600;">Approved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-spacer"></div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="showScreen('dashboard')">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-label">Home</div>
+                </div>
+                <div class="nav-item" onclick="alert('Policy')">
+                    <div class="nav-icon">📋</div>
+                    <div class="nav-label">Policy</div>
+                </div>
+                <div class="nav-item" onclick="alert('Appointments')">
+                    <div class="nav-icon">📅</div>
+                    <div class="nav-label">Appointments</div>
+                </div>
+                <div class="nav-item" onclick="alert('More')">
+                    <div class="nav-icon">☰</div>
+                    <div class="nav-label">More</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- e-Card Screen -->
+        <div id="ecard" class="screen ecard-screen">
+            <button class="back-button" onclick="showScreen('dashboard')">←</button>
+            <div class="ecard-title">Digital e-Card</div>
+
+            <div class="ecard-container">
+                <div class="ecard-header">
+                    <div class="ecard-brand">CareConnect Health</div>
+                    <div class="ecard-type">Member e-Card</div>
+                </div>
+
+                <div class="ecard-field">
+                    <div class="field-label">Member Name</div>
+                    <div class="field-value">Ahmed Al-Mansoor</div>
+                </div>
+
+                <div class="ecard-field">
+                    <div class="field-label">Member ID</div>
+                    <div class="field-value">1234567890</div>
+                </div>
+
+                <div class="ecard-field">
+                    <div class="field-label">Policy Number</div>
+                    <div class="field-value">POL-2024-001</div>
+                </div>
+
+                <div class="qr-container">
+                    <div class="qr-code">▦</div>
+                    <div class="qr-label">Scan at provider</div>
+                </div>
+            </div>
+
+            <div class="ecard-actions">
+                <button class="btn-action" onclick="alert('Download e-Card')">
+                    Download e-Card
+                </button>
+                <button class="btn-secondary" onclick="alert('Share e-Card')">
+                    Share e-Card
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('public/sw.js').catch(() => {});
+        }
+
+        // Auto-focus inputs
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', (e) => {
+                    e.target.parentElement.style.transform = 'scale(1.01)';
+                });
+                input.addEventListener('blur', (e) => {
+                    e.target.parentElement.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

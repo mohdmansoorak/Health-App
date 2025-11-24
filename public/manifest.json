@@ -1,0 +1,26 @@
+{
+  "short_name": "CareConnect",
+  "name": "CareConnect Health",
+  "description": "Your Health Insurance Companion",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0066CC",
+  "background_color": "#F8FAFC",
+  "orientation": "portrait",
+  "categories": ["health", "medical", "insurance"],
+  "prefer_related_applications": false
+}
